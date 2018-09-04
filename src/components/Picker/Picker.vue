@@ -12,9 +12,9 @@
     <div class="content" slot="content" >
       <div class="mask-jianbian top"></div>
       <div class="borderTop"></div>
-      <div v-for="(itemp, idx) in currentData" class="wrap">
+      <div v-for="(itemp, idx) in currentData" class="wrap" :key="idx">
         <ul class="ul" :ref="'picker' + idx" >
-          <li v-for="item in itemp">{{item.name}}</li>
+          <li v-for="(item, indexp) in itemp" :key="indexp">{{item.name}}</li>
         </ul>
       </div>
       <div class="mask-jianbian bottom"></div>
@@ -24,148 +24,144 @@
 </template>
 
 <script>
-  import FlexBox from '../FlexBox/FlexBox'
-  import FlexItem from '../FlexBox/FlexItem'
-  import Modal from '../Modal/Modal'
-  import Scroller from './Pick'
-  const filter = function (array, callback) {
-    if (!Array.isArray(array)) {
-      return false
-    }
-    return array.filter(callback)
+import FlexBox from '../FlexBox/FlexBox'
+import FlexItem from '../FlexBox/FlexItem'
+import Modal from '../Modal/Modal'
+import Scroller from './Pick'
+const filter = function (array, callback) {
+  if (!Array.isArray(array)) {
+    return false
   }
-  const InitData = class {
-    constructor (data, count, showColumn) {
-      this.data = data
-      this.count = count
-      if (showColumn) {
-        this.showColumn = showColumn
+  return array.filter(callback)
+}
+const InitData = class {
+  constructor (data, count, showColumn) {
+    this.data = data
+    this.count = count
+    if (showColumn) {
+      this.showColumn = showColumn
+    }
+  }
+
+  getChildren (value) {
+    return filter(this.data, one => {
+      return one.parent === value
+    })
+  }
+
+  getFirstColumn () {
+    return filter(this.data, one => {
+      return !one.parent || one.parent === 0 || one.parent === '0'
+    })
+  }
+
+  copyData (obj) {
+    return JSON.parse(JSON.stringify(obj))
+  }
+
+  getColumns (value) {
+    if (value.length > 0) {
+      const matchCount = this.copyData(this.data).filter((item) => {
+        return this.copyData(value).indexOf(item.value) > -1
+      }).length
+      if (matchCount < this.copyData(value).length) {
+        value = []
       }
     }
-
-    getChildren (value) {
-      return filter(this.data, one => {
-        return one.parent === value
-      })
-    }
-
-    getFirstColumn () {
-      return filter(this.data, one => {
-        return !one.parent || one.parent === 0 || one.parent === '0'
-      })
-    }
-
-    copyData (obj) {
-      return JSON.parse(JSON.stringify(obj))
-    }
-
-    getColumns (value) {
-      if (value.length > 0) {
-        const matchCount = this.copyData(this.data).filter((item) => {
-          return this.copyData(value).indexOf(item.value) > -1
-        }).length
-        if (matchCount < this.copyData(value).length) {
-          value = []
-        }
-      }
-      var datas = []
-      const max = this.showColumn || 8
-      for (var i = 0; i < max; i++) {
-        if (i === 0) {
-          datas.push(this.getFirstColumn())
-          console.log(datas)
-        } else {
-          // 没有数据时，取得上一级的第一个
-          if (!value[i]) {
-            if (typeof datas[i - 1][0] === 'undefined') {
-              break
-            } else {
-              const topValue = datas[i - 1][0].value
-              datas.push(this.getChildren(topValue))
-            }
+    var datas = []
+    const max = this.showColumn || 8
+    for (var i = 0; i < max; i++) {
+      if (i === 0) {
+        datas.push(this.getFirstColumn())
+        console.log(datas)
+      } else {
+        // 没有数据时，取得上一级的第一个
+        if (!value[i]) {
+          if (typeof datas[i - 1][0] === 'undefined') {
+            break
           } else {
-            datas.push(this.getChildren(value[i - 1]))
+            const topValue = datas[i - 1][0].value
+            datas.push(this.getChildren(topValue))
           }
+        } else {
+          datas.push(this.getChildren(value[i - 1]))
         }
       }
-      const list = datas.filter((item) => {
-        return item.length > 0
-      })
-      // correct the column  SDS
-      this.count = list.length
-      return list
     }
+    const list = datas.filter((item) => {
+      return item.length > 0
+    })
+    // correct the column  SDS
+    this.count = list.length
+    return list
   }
-  export default {
-    name: 'Picker',
-    props: {
-      value: Array,
-      show: Boolean,
-      showColumn: Number,
-      linkage: Number,
-      list: [Array],
-      showCount: [Array],
-      title: {
-        type: String,
-        default: '请选择'
-      }
-    },
-    data () {
-      return {
-        currentData: this.list,
-        scroller: []
-      }
-    },
-    components: {
-      FlexBox,
-      FlexItem,
-      Modal
-    },
-    created () {
-      if (this.linkage !== 0) {
-        const length = this.linkage
-        this.store = new InitData(this.list, length, this.showColumn || this.linkage)
-        this.currentData = this.store.getColumns(this.value)
-        console.log(this.currentData)
-      }
-    },
-    mounted () {
-      let parentEl = document.querySelectorAll('.ul')
-      // console.log(parentEl[0])
-      // console.log(parentEl[0].children[0])
-      let childEl = parentEl[0].children && parentEl[0].children[0]
-      console.log(childEl)
-      for (var i = 0; i < this.showColumn; i++) {
-        new Scroller({
-          el: parentEl[i],
-          W: childEl.offsetHeight,
-          selectedCallback: (val) => {
-            this.$emit('change', val)
+}
+export default {
+  name: 'Picker',
+  props: {
+    value: Array,
+    show: Boolean,
+    showColumn: Number,
+    linkage: Number,
+    list: [Array],
+    showCount: [Array],
+    title: {
+      type: String,
+      default: '请选择'
+    }
+  },
+  data () {
+    return {
+      currentData: this.list,
+      scroller: []
+    }
+  },
+  components: {
+    FlexBox,
+    FlexItem,
+    Modal
+  },
+  created () {
+    if (this.linkage !== 0) {
+      const length = this.linkage
+      this.store = new InitData(this.list, length, this.showColumn || this.linkage)
+      this.currentData = this.store.getColumns(this.value)
+      // console.log(this.currentData)
+    }
+  },
+  mounted () {
+    let parentEl = document.querySelectorAll('.ul')
+    // console.log(parentEl[0])
+    // console.log(parentEl[0].children[0])
+    let childEl = parentEl[0].children && parentEl[0].children[0]
+    // console.log(childEl)
+    for (var i = 0; i < this.showColumn; i++) {
+      new Scroller({
+        el: parentEl[i],
+        columnCount: i,
+        W: childEl.offsetHeight,
+        selectedCallback: (val) => {
+          this.$emit('change', val)
+          let childData = this.store.getChildren(this.currentData[val[1]][val[0]]['value'])
+          let cloumn = val[1]
+          while (childData.length !== 0) {
+            this.currentData.splice(++cloumn, 1, childData)
+            // console.log(childData[0])
+            childData = this.store.getChildren(childData[0]['value'])
           }
-        }).start()
-      }
-      // let picker2 = new Scroller({
-      //   el: this.$refs['picker2'][0],
-      //   W: childEl.offsetHeight,
-      //   selectedCallback: (val) => {
-      //     this.$emit('change', val)
-      //   }
-      // })
-      // this.$nextTick(() => {
-      //   picker.start()
-      //   picker1.start()
-      //   // picker2.start()
-      // })
+        }
+      }).start()
+    }
+  },
+  methods: {
+    cancel () {
+      this.$emit('input', false)
     },
-    methods: {
-      cancel () {
-        this.$emit('input', false)
-      },
-      sure () {
-        this.$emit('input', false)
-      }
+    sure () {
+      this.$emit('input', false)
     }
   }
+}
 </script>
 
 <style lang="less">
