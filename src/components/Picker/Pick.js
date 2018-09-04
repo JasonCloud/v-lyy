@@ -4,6 +4,7 @@ class Scroller {
     this.startY = null
     this.diffY = 0
     this.endY = 0
+    this.columnCount = option.columnCount
     this.defaultIndex = option.defaultIndex || 0
     this.maxMove = null
     this.minMove = null
@@ -39,20 +40,21 @@ class Scroller {
   ontouchend (ev) {
     let count = Math.round(this.diffY / this.W)
     this.endY += this.W * count
-    this.activeIndex = parseInt((this.endY - this.W * (this.showCount - 1) / 2) / this.W)
+    this.activeIndex = Math.round((this.endY - this.W * (this.showCount - 1) / 2) / this.W)
     if (this.endY > this.maxMove) {
       this.endY = this.maxMove
-      this.activeIndex = 1
+      this.activeIndex = 0
     } else if (this.endY < this.minMove) {
       this.endY = this.minMove
-      this.activeIndex = parseInt(this.el.offsetHeight / this.W) - 1
+      console.log(this.el.offsetHeight / this.W)
+      this.activeIndex = Math.round(this.el.offsetHeight / this.W) - 1
     }
     this.el.style['transform'] = `translate3d(0,${this.endY}px,0)`
     this.el.style['transition'] = 'all .3s cubic-bezier(0.165, 0.84, 0.44, 1)'
-    this.callback()
+    this.callback(this.getActive())
   }
   getActive () {
-    return Math.abs(this.activeIndex)
+    return [Math.abs(this.activeIndex), this.columnCount]
   }
 }
 export default Scroller
