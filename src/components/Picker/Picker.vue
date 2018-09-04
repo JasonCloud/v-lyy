@@ -1,9 +1,9 @@
 <template>
   <Modal
-    v-model="value"
-    dialogTransition="vlyy-slide"
-    top="auto"
-    width="100%">
+         v-model="show"
+         dialogTransition="vlyy-slide"
+         top="auto"
+         width="100%">
     <div class="vlyy-picker-title" slot="title">
       <div class="cancel" @click="cancel">取消</div>
       <div class="title">{{title}}</div>
@@ -12,9 +12,9 @@
     <div class="content" slot="content" >
       <div class="mask-jianbian top"></div>
       <div class="borderTop"></div>
-      <div v-for="(itemp, idx) in list" class="wrap">
+      <div v-for="(itemp, idx) in currentData" class="wrap">
         <ul class="ul" :ref="'picker' + idx" >
-          <li v-for="item in itemp">{{item}}</li>
+          <li v-for="item in itemp">{{item.name}}</li>
         </ul>
       </div>
       <div class="mask-jianbian bottom"></div>
@@ -27,72 +27,93 @@
   import FlexBox from '../FlexBox/FlexBox'
   import FlexItem from '../FlexBox/FlexItem'
   import Modal from '../Modal/Modal'
-  class Picker {
-    constructor (option) {
-      this.el = option.el || null
-      this.startY = null
-      this.diffY = 0
-      this.endY = 0
-      this.defaultIndex = option.defaultIndex || 0
-      this.maxMove = null
-      this.minMove = null
-      this.activeIndex = null
-      this.W = option.W || 70
-      this.showCount = option.showCount || 5
-      this.callback = option.selectedCallback
+  import Scroller from './Pick'
+  const filter = function (array, callback) {
+    if (!Array.isArray(array)) {
+      return false
     }
-    start () {
-      let defaultMove = this.defaultIndex * this.W
-      this.maxMove = this.W * (this.showCount - 1) / 2
-      if (!this.defaultIndex) {
-        this.el.style['transform'] = `translate3d(0,${this.maxMove}px,0)`
-        this.endY = this.maxMove
-      } else {
-        this.el.style['transform'] = `translate3d(0,${this.maxMove - defaultMove}px,0)`
-        this.endY = this.maxMove - defaultMove
+    return array.filter(callback)
+  }
+  const InitData = class {
+    constructor (data, count, showColumn) {
+      this.data = data
+      this.count = count
+      if (showColumn) {
+        this.showColumn = showColumn
       }
-      this.minMove = this.maxMove - this.el.offsetHeight + this.W
-      this.el.ontouchstart = this.ontouchstart.bind(this)
-      this.el.ontouchmove = this.ontouchmove.bind(this)
-      this.el.ontouchend = this.ontouchend.bind(this)
     }
-    ontouchstart (ev) {
-      this.startY = ev.changedTouches[0].pageY
+
+    getChildren (value) {
+      return filter(this.data, one => {
+        return one.parent === value
+      })
     }
-    ontouchmove (ev) {
-      let y = ev.changedTouches[0].pageY
-      this.diffY = y - this.startY
-      this.el.style['transform'] = `translate3d(0,${this.diffY + this.endY}px,0)`
-      this.el.style['transition'] = 'all 0s cubic-bezier(0.165, 0.84, 0.44, 1)'
+
+    getFirstColumn () {
+      return filter(this.data, one => {
+        return !one.parent || one.parent === 0 || one.parent === '0'
+      })
     }
-    ontouchend (ev) {
-      let count = Math.round(this.diffY / this.W)
-      this.endY += this.W * count
-      this.activeIndex = parseInt((this.endY - this.W * (this.showCount - 1) / 2) / this.W)
-      if (this.endY > this.maxMove) {
-        this.endY = this.maxMove
-        this.activeIndex = 1
-      } else if (this.endY < this.minMove) {
-        this.endY = this.minMove
-        this.activeIndex = parseInt(this.el.offsetHeight / this.W) - 1
+
+    copyData (obj) {
+      return JSON.parse(JSON.stringify(obj))
+    }
+
+    getColumns (value) {
+      if (value.length > 0) {
+        const matchCount = this.copyData(this.data).filter((item) => {
+          return this.copyData(value).indexOf(item.value) > -1
+        }).length
+        if (matchCount < this.copyData(value).length) {
+          value = []
+        }
       }
-      this.el.style['transform'] = `translate3d(0,${this.endY}px,0)`
-      this.el.style['transition'] = 'all .3s cubic-bezier(0.165, 0.84, 0.44, 1)'
-      this.callback(this.getActive())
-    }
-    getActive () {
-      return Math.abs(this.activeIndex)
+      var datas = []
+      const max = this.showColumn || 8
+      for (var i = 0; i < max; i++) {
+        if (i === 0) {
+          datas.push(this.getFirstColumn())
+          console.log(datas)
+        } else {
+          // 没有数据时，取得上一级的第一个
+          if (!value[i]) {
+            if (typeof datas[i - 1][0] === 'undefined') {
+              break
+            } else {
+              const topValue = datas[i - 1][0].value
+              datas.push(this.getChildren(topValue))
+            }
+          } else {
+            datas.push(this.getChildren(value[i - 1]))
+          }
+        }
+      }
+      const list = datas.filter((item) => {
+        return item.length > 0
+      })
+      // correct the column  SDS
+      this.count = list.length
+      return list
     }
   }
   export default {
     name: 'Picker',
     props: {
-      value: Boolean,
+      value: Array,
+      show: Boolean,
+      showColumn: Number,
+      linkage: Number,
       list: [Array],
-      showCount: [String, Array],
+      showCount: [Array],
       title: {
         type: String,
         default: '请选择'
+      }
+    },
+    data () {
+      return {
+        currentData: this.list,
+        scroller: []
       }
     },
     components: {
@@ -100,35 +121,41 @@
       FlexItem,
       Modal
     },
+    created () {
+      if (this.linkage !== 0) {
+        const length = this.linkage
+        this.store = new InitData(this.list, length, this.showColumn || this.linkage)
+        this.currentData = this.store.getColumns(this.value)
+        console.log(this.currentData)
+      }
+    },
     mounted () {
-      let childEl = this.$refs['picker0'][0] && this.$refs['picker0'][0].children && this.$refs['picker0'][0].children[0]
-      let picker = new Picker({
-        el: this.$refs['picker0'][0],
-        W: childEl.offsetHeight,
-        defaultIndex: 6,
-        selectedCallback: (val) => {
-          this.$emit('change', val)
-        }
-      })
-      let picker1 = new Picker({
-        el: this.$refs['picker1'][0],
-        W: childEl.offsetHeight,
-        selectedCallback: (val) => {
-          this.$emit('change', val)
-        }
-      })
-      let picker2 = new Picker({
-        el: this.$refs['picker2'][0],
-        W: childEl.offsetHeight,
-        selectedCallback: (val) => {
-          this.$emit('change', val)
-        }
-      })
-      this.$nextTick(() => {
-        picker.start()
-        picker1.start()
-        picker2.start()
-      })
+      let parentEl = document.querySelectorAll('.ul')
+      // console.log(parentEl[0])
+      // console.log(parentEl[0].children[0])
+      let childEl = parentEl[0].children && parentEl[0].children[0]
+      console.log(childEl)
+      for (var i = 0; i < this.showColumn; i++) {
+        new Scroller({
+          el: parentEl[i],
+          W: childEl.offsetHeight,
+          selectedCallback: (val) => {
+            this.$emit('change', val)
+          }
+        }).start()
+      }
+      // let picker2 = new Scroller({
+      //   el: this.$refs['picker2'][0],
+      //   W: childEl.offsetHeight,
+      //   selectedCallback: (val) => {
+      //     this.$emit('change', val)
+      //   }
+      // })
+      // this.$nextTick(() => {
+      //   picker.start()
+      //   picker1.start()
+      //   // picker2.start()
+      // })
     },
     methods: {
       cancel () {

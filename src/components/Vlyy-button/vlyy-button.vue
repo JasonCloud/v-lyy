@@ -50,7 +50,7 @@ export default {
 </script>
 
 <style lang="less">
-  @import "../../styles/minix.less";
+  @import "../../assets/css/minix.less";
   button.vlyy-btn {
     width: 100%;
     border-width: 0;

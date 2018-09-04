@@ -8,7 +8,7 @@
     <transition :name="dialogTransition">
       <div class="vlyy-dialog"
            v-show="value"
-           :style="{zIndex: dialogZIndex}">
+           :style="styles">
         <slot name="title">
           <div class="vlyy-dialog-title">{{title}}</div>
         </slot>
@@ -58,6 +58,17 @@ export default {
     dialogZIndex: {
       type: Number,
       default: null
+    },
+    top: [Number, String],
+    width: [Number, String]
+  },
+  computed: {
+    styles () {
+      return {
+        top: this.top,
+        width: this.width,
+        zIndex: this.dialogZIndex
+      }
     }
   },
   methods: {
@@ -73,8 +84,8 @@ export default {
 }
 </script>
 <style lang="less">
-  @import "../../styles/minix.less";
-  @import "../../styles/lyy.animated.less";
+  @import "../../assets/css/minix.less";
+  @import "../../assets/css/lyy.animated.less";
   .vlyy-modal-open {
     overflow: hidden;
     position: fixed;
@@ -115,7 +126,7 @@ export default {
     display: table;
     z-index: 5000;
     width: 80%;
-    max-width: 92%;
+    max-width: 100%;
     top: 0;
     right: 0;
     bottom: 0;

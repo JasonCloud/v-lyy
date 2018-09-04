@@ -25,7 +25,7 @@ export default {
 </script>
 
 <style lang="less">
-  @import "../../styles/minix.less";
+  @import "../../assets/css/minix.less";
   .vlyy-loading-wrapper{
     .vlyy-mask{
       background-color: transparent;
