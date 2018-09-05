@@ -7,40 +7,40 @@
 </template>
 
 <script>
-  export default {
-    name: 'FlexBox',
-    props: {
-      gapping: {
-        type: Number,
-        default: 10
-      },
-      inline: Boolean,
-      justify: String,
-      align: String,
-      wrap: String,
-      direction: String
+export default {
+  name: 'FlexBox',
+  props: {
+    gapping: {
+      type: Number,
+      default: 10
     },
-    computed: {
-      classes () {
-        return {
-          'inlineFlex': this.inline,
-          'flexBox': !this.inline
-        }
-      },
-      styles () {
-        return {
-          'align-items': this.align,
-          'justify-content': this.justify,
-          '-webkit-align-items': this.align,
-          '-webkit-justify-content': this.justify,
-          'flex-direction': this.direction,
-          'flex-wrap': this.wrap,
-          '-webkit-flex-wrap': this.wrap,
-          '-webkit-flex-direction': this.direction
-        }
+    inline: Boolean,
+    justify: String,
+    align: String,
+    wrap: String,
+    direction: String
+  },
+  computed: {
+    classes () {
+      return {
+        'inlineFlex': this.inline,
+        'flexBox': !this.inline
+      }
+    },
+    styles () {
+      return {
+        'align-items': this.align,
+        'justify-content': this.justify,
+        '-webkit-align-items': this.align,
+        '-webkit-justify-content': this.justify,
+        'flex-direction': this.direction,
+        'flex-wrap': this.wrap,
+        '-webkit-flex-wrap': this.wrap,
+        '-webkit-flex-direction': this.direction
       }
     }
   }
+}
 </script>
 
 <style lang="less">

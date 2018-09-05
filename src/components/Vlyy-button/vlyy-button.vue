@@ -58,7 +58,7 @@ export default {
     -webkit-appearance: none;
   }
   .vlyy-btn{
-    margin-top: 15px;
+    /*margin-top: 15px;*/
     position: relative;
     display: block;
     margin-left: auto;
