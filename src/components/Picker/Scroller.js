@@ -10,12 +10,12 @@ class Scroller {
     this.minMove = null
     this.activeIndex = null
     this.W = option.W || 70
-    this.showCount = option.showCount || 5
+    this.showRow = option.showRow || 5
     this.callback = option.selectedCallback
   }
   start () {
     let defaultMove = this.defaultIndex * this.W
-    this.maxMove = this.W * (this.showCount - 1) / 2
+    this.maxMove = this.W * (this.showRow - 1) / 2
     if (!this.defaultIndex) {
       this.el.style['transform'] = `translate3d(0,${this.maxMove}px,0)`
       this.endY = this.maxMove
@@ -27,9 +27,20 @@ class Scroller {
     this.el.ontouchstart = this.ontouchstart.bind(this)
     this.el.ontouchmove = this.ontouchmove.bind(this)
     this.el.ontouchend = this.ontouchend.bind(this)
+    return this
   }
   ontouchstart (ev) {
     this.startY = ev.changedTouches[0].pageY
+  }
+  goto (idx) {
+    if (idx < 0) return
+    let distance = Math.round(this.maxMove - this.W * idx)
+    if (distance > this.maxMove) {
+      distance = this.maxMove
+    } else if (distance < this.minMove) {
+      distance = this.minMove
+    }
+    this.el.style['transform'] = `translate3d(0,${distance}px,0)`
   }
   ontouchmove (ev) {
     let y = ev.changedTouches[0].pageY
@@ -40,7 +51,7 @@ class Scroller {
   ontouchend (ev) {
     let count = Math.round(this.diffY / this.W)
     this.endY += this.W * count
-    this.activeIndex = Math.round((this.endY - this.W * (this.showCount - 1) / 2) / this.W)
+    this.activeIndex = Math.round((this.endY - this.W * (this.showRow - 1) / 2) / this.W)
     if (this.endY > this.maxMove) {
       this.endY = this.maxMove
       this.activeIndex = 0
@@ -51,7 +62,7 @@ class Scroller {
     }
     this.el.style['transform'] = `translate3d(0,${this.endY}px,0)`
     this.el.style['transition'] = 'all .3s cubic-bezier(0.165, 0.84, 0.44, 1)'
-    this.callback(this.getActive())
+    this.callback(this.getActive(), this)
   }
   getActive () {
     return [Math.abs(this.activeIndex), this.columnCount]
