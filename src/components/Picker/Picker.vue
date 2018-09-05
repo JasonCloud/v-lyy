@@ -131,10 +131,7 @@
     },
     mounted () {
       let parentEl = document.querySelectorAll('.ul')
-      // console.log(parentEl[0])
-      // console.log(parentEl[0].children[0])
       let childEl = parentEl[0].children && parentEl[0].children[0]
-      console.log(childEl)
       for (var i = 0; i < this.showColumn; i++) {
         new Scroller({
           el: parentEl[i],
@@ -144,18 +141,6 @@
           }
         }).start()
       }
-      // let picker2 = new Scroller({
-      //   el: this.$refs['picker2'][0],
-      //   W: childEl.offsetHeight,
-      //   selectedCallback: (val) => {
-      //     this.$emit('change', val)
-      //   }
-      // })
-      // this.$nextTick(() => {
-      //   picker.start()
-      //   picker1.start()
-      //   // picker2.start()
-      // })
     },
     methods: {
       cancel () {
