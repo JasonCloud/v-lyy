@@ -245,10 +245,7 @@ export default {
     z-index: 10;
     li{
       text-align: center;
-      /*padding: 12px 0;*/
       .font-dpr(14px);
-      height: 70px;
-      line-height: 70px;
     }
   }
 </style>
