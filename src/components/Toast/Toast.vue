@@ -89,8 +89,8 @@ export default {
 </script>
 
 <style lang="less">
-  @import "../../assets/css/minix.less";
-  @import "../../assets/css/lyy.animated.less";
+  @import "../../styles/minix.less";
+  @import "../../styles/lyy.animated.less";
   .vlyy-toast-wrap {
     position: fixed;
     width: 100%;
