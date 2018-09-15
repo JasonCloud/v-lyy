@@ -14,6 +14,7 @@ $ npm install --save v-lyy
 import {VlyyButton, FlexBox, Loading, FlexItem, Picker, Toast} from 'v-lyy'
 
 ## VlyyButton
+```
   props: {
     type: { // button styles
       type: String,
@@ -26,6 +27,7 @@ import {VlyyButton, FlexBox, Loading, FlexItem, Picker, Toast} from 'v-lyy'
     text: String,// button txt
     vlyyButtonStyle: [String, Array] // element inline-style
   }
+  ```
 ## FlexBox FlexItem    layout
 ```
  FlexBox:
