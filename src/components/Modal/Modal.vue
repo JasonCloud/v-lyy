@@ -83,9 +83,9 @@ export default {
   }
 }
 </script>
-<style lang="less">
-  @import "../../assets/css/minix.less";
-  @import "../../assets/css/lyy.animated.less";
+<style lang="scss">
+  @import "../../styles/minix.scss";
+  @import "../../styles/lyy.animated.scss";
   .vlyy-modal-open {
     overflow: hidden;
     position: fixed;
@@ -93,7 +93,7 @@ export default {
   }
   .vlyy-dialog-title{
     padding: .5em 1em .5em;
-    .font-dpr(16px);
+    @include font-dpr(16px);
     text-align: center;
     font-family: "PingFangSC-Medium","Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
   }
@@ -101,7 +101,7 @@ export default {
     font-family: "PingFangSC-Regular", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
     padding: 0 1.6em .8em;
     min-height: 40px;
-    .font-dpr(14px);
+    @include font-dpr(14px);
     line-height: 1.3;
     word-wrap: break-word;
     word-break: break-all;
@@ -139,12 +139,12 @@ export default {
   }
   .vlyy-dialog-foot{
     border-top: 1px solid #eeeeee;
-    .flex();
+    @include flex();
     button{
       background-color: #fff;
       flex-grow: 1;
       display: block;
-      .setFontSize(16px,#4e89ee);
+      @include setFontSize(16px,#4e89ee);
       padding: 14px 0;
       border: none;
       outline: none;

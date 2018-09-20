@@ -24,8 +24,8 @@ export default {
 }
 </script>
 
-<style lang="less">
-  @import "../../assets/css/minix.less";
+<style lang="scss">
+  @import "../../styles/minix.scss";
   .vlyy-loading-wrapper{
     .vlyy-mask{
       background-color: transparent;
@@ -47,7 +47,7 @@ export default {
       align-items: center;
       justify-content: center;
       .vlyy-loading-text{
-        .setFontSize(16px,#fff);
+        @include setFontSize(16px,#fff);
         text-align: center;
         margin-top:12px;
       }

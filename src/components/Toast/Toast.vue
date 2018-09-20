@@ -88,9 +88,9 @@ export default {
 }
 </script>
 
-<style lang="less">
-  @import "../../styles/minix.less";
-  @import "../../styles/lyy.animated.less";
+<style lang="scss">
+  @import "../../styles/minix.scss";
+  @import "../../styles/lyy.animated.scss";
   .vlyy-toast-wrap {
     position: fixed;
     width: 100%;
@@ -106,7 +106,7 @@ export default {
       background-color: transparent;
     }
     .vlyy-toast {
-      .setFontSize(15px, #fff);
+      @include setFontSize(15px, #fff);
       line-height: 150%;
       background-color: rgba(0, 0, 0, .7);
       max-width: 90%;
@@ -137,7 +137,7 @@ export default {
   }
   .vlyy-toast-top {
     top: 0;
-    .center-hor;
+    @include center-hor();
     .vlyy-toast{
       opacity: 1;
       transform: translateY(50%);
@@ -145,20 +145,20 @@ export default {
   }
   .vlyy-toast-bottom{
     bottom: 0;
-    .center-hor;
+    @include center-hor();
     .vlyy-toast{
       opacity: 1;
       transform: translateY(-50%);
     }
   }
  .vlyy-toast-default{
-    .center-center;
+    @include center-center();
     .vlyy-toast{
       opacity: 1;
       transform: translateY(-50%);
     }
   }
   .vlyy-toast-middle{
-    .center-center;
+    @include center-center();
   }
 </style>

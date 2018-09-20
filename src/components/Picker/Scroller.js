@@ -9,14 +9,15 @@ class Scroller {
     this.maxMove = null
     this.minMove = null
     this.activeIndex = null
+    this.rowTotal = option.rowTotal
     this.rowHeight = option.rowHeight
-    this.elH = Math.round(option.rowHeight * option.primaryTotalRow)
     this.showRow = option.showRow || 5
     this.callback = option.selectedCallback
   }
   start () {
     let defaultMove = this.defaultIndex * this.rowHeight
     this.maxMove = this.rowHeight * (this.showRow - 1) / 2
+    this.elH = this.el.offsetHeight || Math.round(this.rowHeight * this.rowTotal)
     if (!this.defaultIndex) {
       this.el.style['transform'] = `translate3d(0,${this.maxMove}px,0)`
       this.endY = this.maxMove
@@ -24,7 +25,7 @@ class Scroller {
       this.el.style['transform'] = `translate3d(0,${this.maxMove - defaultMove}px,0)`
       this.endY = this.maxMove - defaultMove
     }
-    this.minMove = this.maxMove - (this.el.offsetHeight || this.elH) + this.rowHeight
+    this.minMove = this.maxMove - this.elH + this.rowHeight
     this.el.ontouchstart = this.ontouchstart.bind(this)
     this.el.ontouchmove = this.ontouchmove.bind(this)
     this.el.ontouchend = this.ontouchend.bind(this)
@@ -58,7 +59,8 @@ class Scroller {
       this.activeIndex = 0
     } else if (this.endY < this.minMove) {
       this.endY = this.minMove
-      this.activeIndex = Math.round((this.el.offsetHeight || this.elH) / this.rowHeight) - 1
+      console.log(this.elH / this.rowHeight)
+      this.activeIndex = Math.round(this.elH / this.rowHeight) - 1
     }
     this.el.style['transform'] = `translate3d(0,${this.endY}px,0)`
     this.el.style['transition'] = 'all .3s cubic-bezier(0.165, 0.84, 0.44, 1)'

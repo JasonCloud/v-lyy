@@ -5,10 +5,7 @@
       <div class="borderTop"></div>
       <div v-for="(itemp, idx) in currentData" class="wrap" :key="idx" :style="{width: columnWidthCompute[idx]}">
         <ul class="ul" :ref="'picker' + idx" >
-          <li
-            v-for="(item, indexp) in itemp"
-            :key="indexp"
-            :style="{height: rowHeight + 'px', lineHeight: rowHeight + 'px'}">{{item | serizeItem}}</li>
+          <li v-for="(item, indexp) in itemp" :key="indexp" :style="{height: rowHeight + 'px', lineHeight: rowHeight + 'px'}">{{item | serizeItem}}</li>
         </ul>
       </div>
       <div class="mask-jianbian bottom" :style="maskH"></div>
@@ -27,23 +24,18 @@ export default {
     showColumn: Number, // 展示的列数
     linkage: Number, // 联动的列数
     showRow: Number, // 展示的高度
+    list: [Array], // 列表数据
     rowHeight: {
       type: Number,
-      default: 35
+      default: 48
     },
-    list: [Array], // 列表数据
     columnWidth: {
       type: Array,
       default: () => {
         return []
       }
     }, // 设置各列的宽度
-    defaultData: {
-      type: Array,
-      default: () => {
-        return []
-      }
-    } // 默认显示的数据
+    defaultData: [Array] // 默认显示的数据
   },
   data () {
     return {
@@ -100,12 +92,6 @@ export default {
       const length = this.linkage
       this.store = new InitData(this.list, length, this.showColumn || this.linkage)
       this.currentData = this.store.getColumns(this.value)
-      if (this.defaultData.length < this.showColumn) {
-        let len = this.defaultData.length
-        for (len; len < this.showColumn; len++) {
-          this.defaultData.push(0)
-        }
-      }
       this.defaultData.forEach((v, i) => {
         let childData = this.store.getChildren(this.currentData[i][v]['value'])
         let cloumn = i
@@ -129,7 +115,6 @@ export default {
         }
       }
     }
-    console.log(this.dataSelect)
     this.$emit('input', this.dataSelect)
   },
   mounted () {
@@ -140,9 +125,9 @@ export default {
       this.scroller.push(new Scroller({
         el: parentEl[i],
         columnCount: i,
+        rowTotal: this.currentData[i].length,
         showRow: this.showRow,
         rowHeight: this.rowHeight,
-        primaryTotalRow: this.currentData[i].length,
         selectedCallback: (val) => {
           this.dataSelect[val[1]] = this.currentData[val[1]][val[0]]
           if (this.linkage && this.linkage !== 0) {
@@ -175,15 +160,15 @@ export default {
 }
 </script>
 
-<style lang="less">
-  @import "../../assets/css/minix.less";
+<style lang="scss">
+  @import "../../styles/minix.scss";
   .vlyy-picker-title{
     display: -webkit-flex;
     display: flex;
     background-color: #eee;
     div{
       padding: 20px 0;
-      .font-dpr(16px)
+      @include font-dpr(16px)
     }
     .title{
       flex-grow: 1;
@@ -245,7 +230,7 @@ export default {
     z-index: 10;
     li{
       text-align: center;
-      .font-dpr(14px);
+      @include font-dpr(14px);
     }
   }
 </style>

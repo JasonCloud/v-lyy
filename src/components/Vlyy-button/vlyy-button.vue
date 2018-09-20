@@ -49,8 +49,8 @@ export default {
 }
 </script>
 
-<style lang="less">
-  @import "../../styles/minix.less";
+<style lang="scss">
+  @import "../../styles/minix.scss";
   button.vlyy-btn {
     width: 100%;
     border-width: 0;
@@ -58,7 +58,7 @@ export default {
     -webkit-appearance: none;
   }
   .vlyy-btn{
-    /*margin-top: 15px;*/
+    margin-top: 15px;
     position: relative;
     display: block;
     margin-left: auto;
@@ -68,7 +68,7 @@ export default {
     box-sizing: border-box;
     text-align: center;
     text-decoration: none;
-    .setFontSize(18px,#fff);
+    @include setFontSize(18px,#fff);
     line-height: 2.33333333;
     border-radius: 5px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -147,7 +147,7 @@ export default {
   button.vlyy-btn_min {
     display: inline-block;
     line-height: 2.3;
-    .font-dpr(13px);
+    @include font-dpr(13px);
     width: auto;
   }
 </style>
