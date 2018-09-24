@@ -11,7 +11,7 @@ $ npm install --save v-lyy
 ## Use
 
 ## import compontent
-import {VlyyButton, FlexBox, Loading, FlexItem, Picker, Toast} from 'v-lyy'
+import {VlyyButton, FlexBox, Loading, FlexItem, Picker, Toast, Modal} from 'v-lyy'
 
 ## VlyyButton
 ```
@@ -83,7 +83,43 @@ Loading:
     }
   }
   ```
+## Modal
 
+```Modal:
+  props: {
+    value: Boolean,// 控制modal显示隐藏
+    title: { // Modal 标题
+      type: String,
+      default: '我是标题'
+    },
+    content: { // Modal内容
+      type: String,
+      default: '我是内容'
+    },
+    buttonCloseText: { // Modal 按钮
+      type: String,
+      default: '关闭'
+    },
+    buttonOkText: {// 按钮文字
+      type: String,
+      default: ''
+    },
+    dialogTransition: { // 动画方式
+      type: String,
+      default: 'vlyy-dialog'
+    },
+    maskZIndex: { // 遮罩层zIndex
+      type: Number,
+      default: null
+    },
+    dialogZIndex: { // 弹框zIndex值
+      type: Number,
+      default: null
+    },
+    top: [Number, String],// modal 位置
+    width: [Number, String]// modal 宽度
+  }
+```
 ## Picker
 ```
   props: {
