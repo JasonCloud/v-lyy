@@ -1,12 +1,12 @@
 <template>
-  <div class="Modal vlyy-modal-open">
+  <div class="Modal vlyy-modal-open J_drag">
     <transition name="vlyy-mask">
       <div class="vlyy-mask"
            v-show="value"
            :style="{zIndex: maskZIndex}"></div>
     </transition>
     <transition :name="dialogTransition">
-      <div class="vlyy-dialog"
+      <div class="vlyy-dialog J_drag"
            v-show="value"
            :style="styles">
         <slot name="title">
@@ -27,61 +27,75 @@
 </template>
 
 <script>
-export default {
-  name: 'Modal',
-  props: {
-    value: Boolean,
-    title: {
-      type: String,
-      default: '我是标题'
+  export default {
+    name: 'Modal',
+    props: {
+      value: Boolean,
+      drag: {
+        type: Boolean,
+        default: false
+      },
+      title: {
+        type: String,
+        default: '我是标题'
+      },
+      content: {
+        type: String,
+        default: '我是内容'
+      },
+      buttonCloseText: {
+        type: String,
+        default: '关闭'
+      },
+      buttonOkText: {
+        type: String,
+        default: ''
+      },
+      dialogTransition: {
+        type: String,
+        default: 'vlyy-dialog'
+      },
+      maskZIndex: {
+        type: Number,
+        default: null
+      },
+      dialogZIndex: {
+        type: Number,
+        default: null
+      },
+      top: [Number, String],
+      width: [Number, String]
     },
-    content: {
-      type: String,
-      default: '我是内容'
+    computed: {
+      styles () {
+        return {
+          top: this.top,
+          width: this.width,
+          zIndex: this.dialogZIndex
+        }
+      }
     },
-    buttonCloseText: {
-      type: String,
-      default: '关闭'
+    mounted() {
+      if(!this.drag) {
+        let J_drag = document.querySelectorAll('.J_drag');
+        for(let i = 0; i < J_drag.length; i++) {
+          J_drag[i].ontouchmove = function(event) {
+            event.preventDefault();
+          }
+        }
+      }
     },
-    buttonOkText: {
-      type: String,
-      default: ''
-    },
-    dialogTransition: {
-      type: String,
-      default: 'vlyy-dialog'
-    },
-    maskZIndex: {
-      type: Number,
-      default: null
-    },
-    dialogZIndex: {
-      type: Number,
-      default: null
-    },
-    top: [Number, String],
-    width: [Number, String]
-  },
-  computed: {
-    styles () {
-      return {
-        top: this.top,
-        width: this.width,
-        zIndex: this.dialogZIndex
+    methods: {
+      sure () {
+        this.$emit('sure')
+        this.$emit('input', false)
+      },
+      close () {
+        this.$emit('close')
+        this.$emit('input', false)
       }
     }
-  },
-  methods: {
-    sure () {
-      this.$emit('sure')
-      this.$emit('input', false)
-    },
-    close () {
-      this.$emit('close')
-      this.$emit('input', false)
-    }
   }
-}
 </script>
 <style lang="scss">
   @import "../../styles/minix.scss";
