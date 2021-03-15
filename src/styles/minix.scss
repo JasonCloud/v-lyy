@@ -1,0 +1,58 @@
+$bluebg:#4f8aee;
+//字体大小，颜色
+.font-dpr($font-size) {
+  font-size: $font-size;/*no*/
+
+  [data-dpr="2"] & {
+    font-size: $font-size * 2;/*no*/
+  }
+
+  [data-dpr="3"] & {
+    font-size: $font-size * 3;/*no*/
+  }
+}
+.setFontSize($size, $color){
+  .font-dpr($size);
+  color: $color;
+}
+.s-size{
+  .font-dpr(12px)
+}
+.m-size{
+  .font-dpr(18px)
+}
+@mixin borderL($w:1px, $color: #c8c7cc){
+  border-left: $w solid $color;/*no*/
+}
+@mixin borderR($w:1px, $color: #c8c7cc){
+  border-right: $w solid $color;/*no*/
+}
+@mixin borderB($w:1px, $color: #c8c7cc){
+  border-bottom: $w solid $color;/*no*/
+}
+@mixin borderT($w:1px, $color: #c8c7cc){
+  border-top: $w solid $color;/*no*/
+}
+@mixin border($w:1px, $color: #c8c7cc){
+  border: $w solid $color;
+}
+@mixin flex($justify-content:flex-start){
+  display: flex;
+  justify-content: $justify-content;
+}
+// 水平居中
+.center-hor {
+  left: 50%;
+  transform: translateX(-50%);
+}
+// 垂直居中
+.center-ver {
+  top: 50%;
+  transform: translateY(-50%);
+}
+//上下左右居中
+.center-center {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+}
