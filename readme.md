@@ -9,6 +9,7 @@ $ npm install --save v-lyy
 
 
 ## Use
+![image](https://github.com/JasonCloud/v-lyy/blob/master/demo/images/pic1.png)
 
 ## import compontent
 import {VlyyButton, FlexBox, Loading, FlexItem, Picker, Toast, Modal} from 'v-lyy'
