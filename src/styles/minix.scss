@@ -1,6 +1,6 @@
 $bluebg:#4f8aee;
 //字体大小，颜色
-.font-dpr($font-size) {
+@mixin font-dpr($font-size) {
   font-size: $font-size;/*no*/
 
   [data-dpr="2"] & {
@@ -11,15 +11,15 @@ $bluebg:#4f8aee;
     font-size: $font-size * 3;/*no*/
   }
 }
-.setFontSize($size, $color){
-  .font-dpr($size);
+@mixin setFontSize($size, $color){
+  @include font-dpr($size);
   color: $color;
 }
-.s-size{
-  .font-dpr(12px)
+@mixin s-size(){
+  @include font-dpr(12px)
 }
-.m-size{
-  .font-dpr(18px)
+@mixin m-size(){
+  @include font-dpr(18px)
 }
 @mixin borderL($w:1px, $color: #c8c7cc){
   border-left: $w solid $color;/*no*/
@@ -41,17 +41,17 @@ $bluebg:#4f8aee;
   justify-content: $justify-content;
 }
 // 水平居中
-.center-hor {
+@mixin center-hor {
   left: 50%;
   transform: translateX(-50%);
 }
 // 垂直居中
-.center-ver {
+@mixin center-ver {
   top: 50%;
   transform: translateY(-50%);
 }
 //上下左右居中
-.center-center {
+@mixin center-center {
   left: 50%;
   top: 50%;
   transform: translate(-50%,-50%);

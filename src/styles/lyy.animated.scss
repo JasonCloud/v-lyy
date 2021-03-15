@@ -2,6 +2,10 @@
   animation-duration: .8s;
   animation-fill-mode: both
 }
+@mixin animated{
+  animation-duration: .8s;
+  animation-fill-mode: both
+}
 @keyframes bounceInDown {
   0%,60%,75%,90%,to {
     animation-timing-function: cubic-bezier(.215,.61,.355,1)
@@ -45,11 +49,11 @@
 }
 
 .vlyy-bounceInDown-leave-active {
-  .animated;
+  @include animated;
   animation-name: bounceOutUp
 }
 .vlyy-bounceInDown-enter-active {
-  .animated;
+  @include animated;
   animation-name: bounceInDown
 }
 .vlyy-fade-enter-active,.vlyy-fade-leave-active {
