@@ -4,9 +4,9 @@
       <div class="mask-jianbian top" :style="maskH"></div>
       <div class="borderTop"></div>
       <div v-for="(itemp, idx) in currentData" class="wrap" :key="idx" :style="{width: columnWidthCompute[idx]}">
-        <ul class="ul" :ref="'picker' + idx" >
-          <li v-for="(item, indexp) in itemp" :key="indexp" :style="{height: rowHeight + 'px', lineHeight: rowHeight + 'px'}">{{item | serizeItem}}</li>
-        </ul>
+        <div class="ul" :ref="'picker' + idx" >
+          <div class="li" v-for="(item, indexp) in itemp" :key="indexp" :style="{height: rowHeight + 'px', lineHeight: rowHeight + 'px'}">{{item | serizeItem}}</div>
+        </div>
       </div>
       <div class="mask-jianbian bottom" :style="maskH"></div>
     </div>
@@ -228,7 +228,7 @@ export default {
   }
   .ul{
     z-index: 10;
-    li{
+    .li{
       text-align: center;
       @include font-dpr(14px);
     }
